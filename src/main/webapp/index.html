@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anonymous Harassment Reporting Platform</title>
+<style>
+/* --- Styles unchanged --- */
+header { position: fixed; top:0; left:0; width:100%; padding:10px; text-align:center; background: rgba(0,15,40,0.85); border-bottom:2px solid #00c6ff; z-index:1000; }
+body { margin:0; font-family:'Segoe UI',sans-serif; background:url("https://image.freepik.com/vecteurs-libre/concept-cybersecurite-element-hud-fond-ton-bleu_99087-130.jpg") no-repeat center center fixed; background-size:cover; color:#e0f7ff; padding-top:70px; }
+header h1 { margin:0; font-size:28px; color:#00c6ff; text-shadow:0 0 10px #00c6ff,0 0 20px #0093ff; }
+.top-right { position:absolute; top:20px; right:20px; }
+.top-right button { background: rgba(0,20,50,0.85); color:#00c6ff; border:1px solid #00c6ff; padding:8px 14px; margin-left:10px; border-radius:6px; cursor:pointer; font-weight:bold; transition:0.3s; }
+.top-right button:hover { background:#00c6ff; color:#000; box-shadow:0 0 12px #00c6ff; }
+.right-center { position:absolute; top:55%; right:6%; transform:translateY(-50%); width:500px; text-align:center; opacity:0; animation:fadeIn 2s ease forwards; }
+.right-center .assurance-message { max-width:100%; margin:0 auto 20px auto; padding:28px; font-size:1.3rem; line-height:1.7; background: rgba(0,20,40,0.65); border:1px solid #00bcd4; border-radius:14px; box-shadow:0 0 15px #00e5ff,0 0 30px #00bcd4; backdrop-filter:blur(6px); }
+.right-center button { background: rgba(0,30,70,0.85); color:#fff; border:2px solid #00c6ff; padding:15px 25px; border-radius:10px; font-size:20px; cursor:pointer; text-shadow:0 0 12px #00c6ff; transition:0.3s; margin:10px; }
+.right-center button:hover { background:#00c6ff; color:#000; box-shadow:0 0 20px #00c6ff; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(-60%);} to{opacity:1; transform:translateY(-50%);} }
+.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; justify-content:center; align-items:center; z-index:1000; overflow-y:auto; padding:20px; }
+.container { width:500px; background:rgba(0,0,20,0.95); padding:20px; border-radius:10px; border:1px solid #00c6ff; box-shadow:0 0 20px rgba(0,198,255,0.4); animation:fadeInModal 0.4s ease; margin:auto; max-height:90vh; overflow-y:auto; }
+.container h2 { font-size:20px; color:#00c6ff; margin-bottom:12px; text-shadow:0 0 8px #00c6ff; text-align:center; }
+.form-group { margin:6px 0; }
+label { display:block; margin-bottom:3px; font-size:13px; font-weight:500; }
+input, select, textarea { width:100%; padding:6px; font-size:13px; border:1px solid #00c6ff; border-radius:5px; outline:none; background:#001020; color:#e0f7ff; box-sizing:border-box; }
+textarea { resize:vertical; min-height:50px; }
+input[type="file"] { padding:8px; cursor:pointer; }
+input[type="file"]::file-selector-button { background:#00c6ff; border:none; padding:6px 12px; border-radius:4px; color:#000; font-weight:bold; cursor:pointer; margin-right:10px; transition:0.3s; }
+input[type="file"]::file-selector-button:hover { background:#00e5ff; box-shadow:0 0 8px #00c6ff; }
+.file-note { font-size:11px; color:#a0d7ff; margin-top:3px; font-style:italic; }
+button.action { background:#00c6ff; border:none; padding:10px 16px; border-radius:6px; margin-top:10px; cursor:pointer; font-weight:bold; color:#000; transition:0.3s; }
+button.action:hover { background:#fff; color:#000; box-shadow:0 0 15px #00c6ff; }
+@keyframes fadeInModal { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Anonymous Harassment Reporting Platform</h1>
+  <div class="top-right">
+    <button onclick="openModal('adminLogin')">Admin</button>
+    <button onclick="openModal('officerLogin')">Safety Officer</button>
+  </div>
+</header>
+
+<div class="right-center">
+  <div class="assurance-message">
+    <p>
+       You are not alone, and your voice deserves to be heard.  
+      This platform is designed to provide you with a safe, anonymous, and secure space  
+      to share your experience without fear of judgment or retaliation.  
+      Every detail you submit is kept confidential and taken seriously,  
+      ensuring that your concerns are addressed with dignity, empathy, and respect.  
+      By speaking up, you take the first step towards justice
+    </p>
+  </div>
+  <button onclick="openModal('reportForm')">➕ Add Report</button>
+  <button onclick="openModal('trackReport')">📌Track Report</button>
+</div>
+
+<div class="overlay" id="overlay">
+
+  <!-- Submit Report Form -->
+  <div class="container" id="reportForm">
+    <h2>Submit a Report</h2>
+    <form action="SubmitReportServlet" method="post" enctype="multipart/form-data">
+      <div class="form-group"><label>Age</label><input type="number" name="age" required></div>
+      <div class="form-group"><label>Gender</label>
+        <select name="gender" required>
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Harassment Information / Details</label><textarea name="details" required></textarea></div>
+      <div class="form-group"><label>Date of Incident</label><input type="date" name="incident_date" required></div>
+      <div class="form-group"><label>Place of Incident</label><input type="text" name="location" required></div>
+      <div class="form-group">
+        <label>Attach Proof (Optional)</label>
+        <input type="file" name="proofFile" accept="image/*,.pdf,.doc,.docx">
+        <div class="file-note">Supported: Images, PDF, Word documents (Max 10MB)</div>
+      </div>
+      <button type="submit" class="action">Submit Report</button>
+      <button type="button" class="action" onclick="closeModal()">Close</button>
+    </form>
+  </div>
+
+  <!-- Track Report Form -->
+  <div class="container" id="trackReport" style="display:none;">
+    <h2>Track Your Report</h2>
+    <form action="TrackReportServlet" method="post">
+      <div class="form-group"><label>Reference Code</label><input type="text" name="referenceCode" required></div>
+      <button type="submit" class="action">Check Status</button>
+      <button type="button" class="action" onclick="closeModal()">Close</button>
+    </form>
+  </div>
+
+  <!-- Admin Login -->
+  <div class="container" id="adminLogin" style="display:none;">
+    <h2>Admin Login</h2>
+    <form action="AdminLoginServlet" method="post">
+      <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
+      <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
+      <button type="submit" class="action">Login</button>
+      <button type="button" class="action" onclick="closeModal()">Close</button>
+    </form>
+  </div>
+
+  <!-- Safety Officer Login -->
+  <div class="container" id="officerLogin" style="display:none;">
+    <h2>Safety Officer Login</h2>
+    <form action="OfficerLoginServlet" method="post">
+      <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
+      <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
+      <button type="submit" class="action">Login</button>
+      <button type="button" class="action" onclick="closeModal()">Close</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+function openModal(id){
+  document.getElementById("overlay").style.display="flex";
+  document.querySelectorAll(".container").forEach(c=>c.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+function closeModal(){ document.getElementById("overlay").style.display="none"; }
+</script>
+
+</body>
+</html>
